@@ -6,7 +6,7 @@ results_log2fc <- vroom::vroom(here::here("data/results_log2fc_keywords.csv"))
 log2fc_df <- readRDS(here::here("data/data_log2fc_long_keywords.rds"))
 
 #load long form data frame
-df_long <- vroom::vroom(here::here("data/data_long_keywords.csv"))
+df_long <- readRDS(here::here("data/data_long_keywords.rds"))
 
 #create dataframe of mean log2fc of each protein
 df_mean_log2fc <- log2fc_df %>%

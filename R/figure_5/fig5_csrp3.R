@@ -61,8 +61,8 @@ regulated_mhc2 <- results_mhc2_regulated %>%
 
 
 #load data long form with keywords
-df_long <- vroom::vroom(here::here("data/data_long_keywords.csv")) %>%
-    select(-c(1, 3)) #random numbers
+df_long <- readRDS(here::here("data/data_long_keywords.rds")) %>%
+    select(!2) #random numbers
 
 #filter for csrp3
 csrp3_df <- df_long %>%
@@ -81,7 +81,7 @@ lm_csrp3_trial <- contrast(means_csrp3, method = "pairwise", by = "fibertype", a
 print(lm_csrp3_trial)
 
 #Load log2fc long form with keywords
-df_log2fc <- vroom::vroom(here::here("data/data_log2fc_long_keywords.csv"))
+df_log2fc <- readRDS(here::here("data/data_log2fc_long_keywords.rds"))
 
 #filter for CSRP3, which  is a positive regulator of myogenesis and plays a role in sensing mechanical stretch
 csrp3 <- df_log2fc %>%
