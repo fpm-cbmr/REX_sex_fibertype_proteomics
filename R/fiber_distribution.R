@@ -245,10 +245,10 @@ dist_fig <- df_ihc %>%
         strip.text = element_text(size = 8),
         plot.title = element_text(size = 8, face = "bold", hjust = 0.5)
     )+
-    coord_cartesian(ylim = c(10, 105)) +
-    geom_segment(data = lines_dist, aes(x = x, xend = xend, y = y, yend = yend), size = 0.25, inherit.aes = FALSE) +
-    geom_segment(data = brackets_dist, aes(x = x, xend = xend, y = y, yend = yend), size = 0.25, inherit.aes = FALSE) +
-    geom_text(data = p_dist, aes(x = x, y = y, label = label), inherit.aes = FALSE, size = 2) +
+    coord_cartesian(ylim = c(10, 100)) +
+    #geom_segment(data = lines_dist, aes(x = x, xend = xend, y = y, yend = yend), size = 0.25, inherit.aes = FALSE) +
+    #geom_segment(data = brackets_dist, aes(x = x, xend = xend, y = y, yend = yend), size = 0.25, inherit.aes = FALSE) +
+    #geom_text(data = p_dist, aes(x = x, y = y, label = label), inherit.aes = FALSE, size = 2) +
     xlab("none") +
     ylab("Fiber type distribution (%)") +
     ggtitle("Distribution of single muscle fibers")
@@ -330,10 +330,10 @@ area_dist_fig <- df_ihc %>%
         strip.text = element_text(size = 8),
         plot.title = element_text(size = 8, face = "bold", hjust = 0.5)
     )+
-    coord_cartesian(ylim = c(10, 105)) +
-    geom_segment(data = lines_dist_area, aes(x = x, xend = xend, y = y, yend = yend), size = 0.25, inherit.aes = FALSE) +
-    geom_segment(data = brackets_dist_area, aes(x = x, xend = xend, y = y, yend = yend), size = 0.25, inherit.aes = FALSE) +
-    geom_text(data = p_dist_area, aes(x = x, y = y, label = label), inherit.aes = FALSE, size = 2) +
+    coord_cartesian(ylim = c(10, 100)) +
+    #geom_segment(data = lines_dist_area, aes(x = x, xend = xend, y = y, yend = yend), size = 0.25, inherit.aes = FALSE) +
+    #geom_segment(data = brackets_dist_area, aes(x = x, xend = xend, y = y, yend = yend), size = 0.25, inherit.aes = FALSE) +
+    #geom_text(data = p_dist_area, aes(x = x, y = y, label = label), inherit.aes = FALSE, size = 2) +
     xlab("none") +
     ylab("Fiber area proportion (%)") +
     ggtitle("Area proportion of muscle fiber cross-sections")
