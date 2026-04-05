@@ -195,7 +195,7 @@ csrp3_fig <- emm_csrp3 %>%
         strip.text = element_text(size = 8),
         plot.title = element_text(size = 10, face = "bold", hjust = 0.5)
     ) +
-    scale_y_continuous(limits = c(-0.2, 1.2)) +
+    #scale_y_continuous(limits = c(-0.2, 1.2)) +
     geom_segment(data = brackets_csrp3, aes(x = x, xend = xend, y = y, yend = yend), size = 0.25, inherit.aes = FALSE) +
     geom_text(data = p_csrp3, aes(x = x, y = y, label = label), inherit.aes = FALSE, size = 2.75) +
     xlab("none") +

@@ -24,7 +24,11 @@ pivot_longer(
         delta_flag = flag[aav == "csrp3"] - flag[aav == "egfp"]
     ) %>%
     ungroup() %>%
-    filter(aav == "csrp3")
+    filter(aav == "csrp3") %>%
+    mutate(
+        normalized_weight = delta_weight / weight
+    )
+
 
 
 # GASTOCNEMIUS MUSCLE WEIGHT ----------------------------------------------
@@ -105,6 +109,79 @@ muscle_fig <- emm_muscle %>%
     ylab(expression(Delta~"Muscle mass (mg)")) +
     ggtitle("Change in muscle mass \n (CSRP3 - sham)")
 
+#Normalize change in muscle mass to total muscle mass
+
+#Get model-estimated EGFP means for normalization
+egfp_gast <- means_gast %>%
+    as.data.frame() %>%
+    filter(aav == "egfp") %>%
+    pull(emmean)
+
+egfp_ta <- means_ta %>%
+    as.data.frame() %>%
+    filter(aav == "egfp") %>%
+    pull(emmean)
+
+#Normalize model-based contrast and CI by EGFP model mean
+contrast_gast_norm <- contrast_gast %>%
+    mutate(
+        estimate = estimate / egfp_gast * 100,
+        lower.CL = lower.CL / egfp_gast * 100,
+        upper.CL = upper.CL / egfp_gast * 100
+    )
+
+contrast_ta_norm <- contrast_ta %>%
+    mutate(
+        estimate = estimate / egfp_ta * 100,
+        lower.CL = lower.CL / egfp_ta * 100,
+        upper.CL = upper.CL / egfp_ta * 100
+    )
+
+#merge data frames
+emm_muscle_norm <- rbind(contrast_gast_norm, contrast_ta_norm)
+
+#define p-values for figure
+p_muscle <- tibble(
+    x = c(1, 2),
+    y = c(6, 13),
+    label = c("p<0.001", "p=0.032")
+)
+
+#Figure
+muscle_fig <- emm_muscle_norm %>%
+    ggplot(aes(x = muscle, y = estimate, fill = muscle)) +
+    geom_col(position = position_dodge(width = 0.9),
+             width = 0.9, color = NA, alpha = 0.7) +
+    geom_errorbar(aes(ymin = lower.CL, ymax = upper.CL),
+                  width = 0.1, position = position_dodge(width = 0.9),
+                  linewidth = 0.25) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    scale_fill_manual(values = c("#E61717", "#F6CDCD")) +
+    scale_x_discrete(labels = c("gast" = "Gastrocnemius", "ta" = "Tibialis anterior")) +
+    ggplot2::theme_bw() +
+    theme(
+        panel.background = element_rect(color = "black", fill = NA, linewidth = 0.5),
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(),
+        plot.background = element_blank(),
+        legend.position = "none",
+        legend.key.size = unit(0.5, "lines"),
+        legend.box.margin = ggplot2::margin(-10, 0, -10, 0),
+        axis.title.x = ggplot2::element_blank(),
+        axis.title.y = element_text(size = 8),
+        text = element_text(size = 8),
+        axis.text.x = element_text(color = "black", size = 8),
+        axis.text.y = element_text(color = "black", size = 8),
+        axis.line = element_line(colour = "black"),
+        strip.text = element_text(size = 8),
+        plot.title = element_text(size = 10, face = "bold", hjust = 0.5)
+    ) +
+    #scale_y_continuous(limits = c(-0.02, 0.14)) +
+    geom_text(data = p_muscle, aes(x = x, y = y, label = label), inherit.aes = FALSE, size = 2.75) +
+    xlab("none") +
+    ylab(expression(Delta~"Muscle mass (%)")) +
+    ggtitle("Change in muscle mass \n (CSRP3 - sham)")
+
 ggsave(plot = muscle_fig, here::here('figures/figure_5/aav_muscle.pdf'), height = 65, width = 60, units = "mm")
 
 # Overexpression CSRP3 ----------------------------------------------------
@@ -183,13 +260,13 @@ csrp3_fig <- emm_csrp3 %>%
         strip.text = element_text(size = 8),
         plot.title = element_text(size = 10, face = "bold", hjust = 0.5)
     ) +
-    scale_y_continuous(limits = c(-2000000, 17000000)) +
+    #scale_y_continuous(limits = c(-2000000, 17000000)) +
     geom_text(data = p_csrp3, aes(x = x, y = y, label = label), inherit.aes = FALSE, size = 2.75) +
     xlab("none") +
     ylab(expression(Delta~"CSRP3 (a.u.)")) +
     ggtitle("Change in CSRP3 \n (CSRP3 - sham)")
 
-ggsave(plot = csrp3_fig, here::here('figures/figure_5/aav_csrp3.pdf'), height = 65, width = 70, units = "mm")
+ggsave(plot = csrp3_fig, here::here('figures/figure_5/aav_csrp3.pdf'), height = 65, width = 68, units = "mm")
 
 
 
@@ -267,10 +344,10 @@ flag_fig <- emm_flag %>%
         strip.text = element_text(size = 8),
         plot.title = element_text(size = 10, face = "bold", hjust = 0.5)
     ) +
-    scale_y_continuous(limits = c(-3000000, 23000000)) +
+    #scale_y_continuous(limits = c(-3000000, 23000000)) +
     geom_text(data = p_flag, aes(x = x, y = y, label = label), inherit.aes = FALSE, size = 2.75) +
     xlab("none") +
     ylab(expression(Delta~"rAAV:CSRP3 FLAG (a.u.)")) +
     ggtitle("Change in rAAV:CSRP3 FLAG \n (CSRP3 - sham)")
 
-ggsave(plot = flag_fig, here::here('figures/figure_5/aav_flag.pdf'), height = 65, width = 70, units = "mm")
+ggsave(plot = flag_fig, here::here('figures/figure_5/aav_flag.pdf'), height = 65, width = 68, units = "mm")
