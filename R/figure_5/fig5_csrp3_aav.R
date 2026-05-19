@@ -169,12 +169,12 @@ muscle_fig <- emm_muscle_norm %>%
         legend.box.margin = ggplot2::margin(-10, 0, -10, 0),
         axis.title.x = ggplot2::element_blank(),
         axis.title.y = element_text(size = 8),
-        text = element_text(size = 8),
-        axis.text.x = element_text(color = "black", size = 8),
-        axis.text.y = element_text(color = "black", size = 8),
+        text = element_text(size = 6),
+        axis.text.x = element_text(color = "black", size = 6),
+        axis.text.y = element_text(color = "black", size = 6),
         axis.line = element_line(colour = "black"),
-        strip.text = element_text(size = 8),
-        plot.title = element_text(size = 10, face = "bold", hjust = 0.5)
+        strip.text = element_text(size = 6),
+        plot.title = element_text(size = 8, face = "bold", hjust = 0.5)
     ) +
     #scale_y_continuous(limits = c(-0.02, 0.14)) +
     geom_text(data = p_muscle, aes(x = x, y = y, label = label), inherit.aes = FALSE, size = 2.75) +
@@ -182,7 +182,7 @@ muscle_fig <- emm_muscle_norm %>%
     ylab(expression(Delta~"Muscle mass (%)")) +
     ggtitle("Change in muscle mass \n (CSRP3 - sham)")
 
-ggsave(plot = muscle_fig, here::here('figures/figure_5/aav_muscle.pdf'), height = 65, width = 60, units = "mm")
+ggsave(plot = muscle_fig, here::here('figures/figure_5/aav_muscle.pdf'), height = 65, width = 47, units = "mm")
 
 # Overexpression CSRP3 ----------------------------------------------------
 
@@ -253,12 +253,12 @@ csrp3_fig <- emm_csrp3 %>%
         legend.box.margin = ggplot2::margin(-10, 0, -10, 0),
         axis.title.x = ggplot2::element_blank(),
         axis.title.y = element_text(size = 8),
-        text = element_text(size = 8),
-        axis.text.x = element_text(color = "black", size = 8),
-        axis.text.y = element_text(color = "black", size = 8),
+        text = element_text(size = 6),
+        axis.text.x = element_text(color = "black", size = 6),
+        axis.text.y = element_text(color = "black", size = 6),
         axis.line = element_line(colour = "black"),
-        strip.text = element_text(size = 8),
-        plot.title = element_text(size = 10, face = "bold", hjust = 0.5)
+        strip.text = element_text(size = 6),
+        plot.title = element_text(size = 8, face = "bold", hjust = 0.5)
     ) +
     #scale_y_continuous(limits = c(-2000000, 17000000)) +
     geom_text(data = p_csrp3, aes(x = x, y = y, label = label), inherit.aes = FALSE, size = 2.75) +
@@ -266,7 +266,7 @@ csrp3_fig <- emm_csrp3 %>%
     ylab(expression(Delta~"CSRP3 (a.u.)")) +
     ggtitle("Change in CSRP3 \n (CSRP3 - sham)")
 
-ggsave(plot = csrp3_fig, here::here('figures/figure_5/aav_csrp3.pdf'), height = 65, width = 68, units = "mm")
+ggsave(plot = csrp3_fig, here::here('figures/figure_5/aav_csrp3.pdf'), height = 65, width = 53, units = "mm")
 
 
 
@@ -337,12 +337,12 @@ flag_fig <- emm_flag %>%
         legend.box.margin = ggplot2::margin(-10, 0, -10, 0),
         axis.title.x = ggplot2::element_blank(),
         axis.title.y = element_text(size = 8),
-        text = element_text(size = 8),
-        axis.text.x = element_text(color = "black", size = 8),
-        axis.text.y = element_text(color = "black", size = 8),
+        text = element_text(size = 6),
+        axis.text.x = element_text(color = "black", size = 6),
+        axis.text.y = element_text(color = "black", size = 6),
         axis.line = element_line(colour = "black"),
-        strip.text = element_text(size = 8),
-        plot.title = element_text(size = 10, face = "bold", hjust = 0.5)
+        strip.text = element_text(size = 6),
+        plot.title = element_text(size = 8, face = "bold", hjust = 0.5)
     ) +
     #scale_y_continuous(limits = c(-3000000, 23000000)) +
     geom_text(data = p_flag, aes(x = x, y = y, label = label), inherit.aes = FALSE, size = 2.75) +
@@ -350,4 +350,67 @@ flag_fig <- emm_flag %>%
     ylab(expression(Delta~"rAAV:CSRP3 FLAG (a.u.)")) +
     ggtitle("Change in rAAV:CSRP3 FLAG \n (CSRP3 - sham)")
 
-ggsave(plot = flag_fig, here::here('figures/figure_5/aav_flag.pdf'), height = 65, width = 68, units = "mm")
+ggsave(plot = flag_fig, here::here('figures/figure_5/aav_flag.pdf'), height = 65, width = 53, units = "mm")
+
+
+# REPLICATION GASTROCNEMIUS -----------------------------------------------
+
+#load data
+df_replicate <- vroom::vroom(here::here("data-raw/csrp3_aav_replication.csv"))
+
+#create delta data frame
+df_delta_replicate <- df_replicate %>%
+    group_by(bl6) %>%
+    mutate(
+        delta_gast = gast[aav == "csrp3"] - gast[aav == "egfp"]
+    ) %>%
+    ungroup() %>%
+    filter(aav == "csrp3")
+
+#Linear mixed model
+lmm_replicate <- lmer(gast ~ aav + (1 | bl6), data = df_replicate, REML = FALSE)
+fixed_effects_replicate <- anova(lmm_replicate)
+
+#define p-value for figure
+p_replicate <- tibble(
+    x = 4,
+    y = 25,
+    label = "p=0.017"
+)
+
+##FIGURE##
+replicate_fig <- df_delta_replicate %>%
+    ggplot(aes(x = week, y = delta_gast, color = aav)) +
+    stat_summary(fun = mean, geom = "crossbar",
+                 width = 0.8, fatten = 1.5, color = "black", alpha = 0.7) +
+    stat_summary(fun.data = mean_cl_normal, geom = "errorbar",
+                 width = 0.4, linewidth = 0.25, color = "black") +
+    geom_quasirandom(aes(color = aav),
+                     size = 2.5, alpha = 0.7, width = 0.25, stroke = 0) +
+    geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.25) +
+    scale_color_manual(values = "#E61717") +
+    scale_x_discrete(labels = "Gastrocnemius") +
+    ggplot2::theme_bw() +
+    theme(
+        panel.background = element_rect(color = "black", fill = NA, linewidth = 0.5),
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(),
+        plot.background = element_blank(),
+        legend.position = "none",
+        text = element_text(size = 6),
+        axis.text.x = element_text(color = "black", size = 6),
+        axis.text.y = element_text(color = "black", size = 6),
+        axis.title.y = element_text(size = 8),
+        axis.line = element_line(colour = "black"),
+        strip.text = element_text(size = 8),
+        plot.title = element_text(size = 8, face = "bold", hjust = 0.5)) +
+    geom_text(data = p_replicate,
+              aes(x = x, y = y, label = label),
+              inherit.aes = FALSE, size = 2.75) +
+    xlab("Gastrocnemius") +
+    ylab(expression(Delta~"Muscle mass (mg)")) +
+    ggtitle("Replication \n (CSRP3 - sham)")
+
+ggsave(plot = replicate_fig, here::here('figures/figure_5/replicate_gast_aav.pdf'), height = 65, width = 33, units = "mm")
+
+

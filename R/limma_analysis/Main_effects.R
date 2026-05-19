@@ -44,7 +44,7 @@ baseline_male_vs_female <- topTable(fit2, coef = 1, number = Inf, sort.by = "log
                       q > 0.05 ~ "no")) %>%
     dplyr::arrange(desc(logFC))
 
-write.csv(baseline_male_vs_female, here::here("results/sex_main_effect.csv"))
+#write.csv(baseline_male_vs_female, here::here("results/sex_main_effect.csv"))
 
 
 # Main effect of training -------------------------------------------------
