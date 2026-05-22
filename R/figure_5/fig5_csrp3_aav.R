@@ -413,4 +413,53 @@ replicate_fig <- df_delta_replicate %>%
 
 ggsave(plot = replicate_fig, here::here('figures/figure_5/replicate_gast_aav.pdf'), height = 65, width = 33, units = "mm")
 
+#bracket for replication figure
+bracket_replication <- tibble(
+    x = c(1, 1, 2),
+    xend = c(2, 1, 2),
+    y = c(169, 169, 169),
+    yend = c(169, 160, 167)
+)
+
+#define p-value for figure
+p_replicate <- tibble(
+    x = 1.5,
+    y = 171,
+    label = "p=0.017"
+)
+
+##ABSOLUTE VALUES FIGURE##
+replicate_fig <- df_replicate %>%
+    mutate(aav = factor(aav, levels = c("egfp", "csrp3"))) %>%
+    ggplot(aes(x = aav, y = gast, color = aav)) +
+    geom_jitter(size = 2.5, alpha = 0.6, width = 0, stroke = 0) +
+    scale_color_manual(
+        name = NULL,
+        values = c("csrp3" = "#E61717", "egfp" = "gray"))+
+    geom_line(aes(group = bl6),
+              color = "black",
+              linewidth = 0.25,
+              alpha = 0.7) +
+    scale_x_discrete(labels = c("csrp3" = "CSRP3", "egfp" = "Sham")) +
+    ggplot2::theme_bw() +
+    theme(
+        panel.background = element_rect(color = "black", fill = NA, linewidth = 0.5),
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(),
+        plot.background = element_blank(),
+        legend.position = "none",
+        text = element_text(size = 6),
+        axis.text.x = element_text(color = "black", size = 6),
+        axis.text.y = element_text(color = "black", size = 6),
+        axis.title.y = element_text(size = 8),
+        axis.line = element_line(colour = "black"),
+        strip.text = element_text(size = 8),
+        plot.title = element_text(size = 8, face = "bold", hjust = 0.5)) +
+    geom_segment(data = bracket_replication, aes(x = x, xend = xend, y = y, yend = yend), size = 0.25, inherit.aes = FALSE) +
+    geom_text(data = p_replicate, aes(x = x, y = y, label = label), inherit.aes = FALSE, size = 2.5) +
+    ylab("Gastrocnemius muscle mass (mg)") +
+    xlab(NULL) +
+    ggtitle("Replication")
+
+ggsave(plot = replicate_fig, here::here('figures/figure_5/replicate_gast_aav.pdf'), height = 65, width = 33, units = "mm")
 
