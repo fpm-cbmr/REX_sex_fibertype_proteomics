@@ -45,13 +45,9 @@ ebayes_sex <- eBayes(contrasts.fit(fit_sex, contrast_sex))
 
 #extract results
 results_sex <- topTable(ebayes_sex, coef = 1, number = Inf, sort.by = "logFC") %>%
-    dplyr::mutate(xiao=10^-(sqrt(log10(1/(P.Value^logFC))^2))) %>%
     dplyr::mutate(protein = row.names(.),
                   q = qvalue(.$P.Value)$qvalues,
-                  qiao = qvalue(.$xiao)$qvalues,
                   "-log10p" = -log10(.$P.Value),
-                  regulated_xiao = ifelse(xiao < 0.05, "+", ""),
-                  regulated_qiao = ifelse(qiao < 0.05, "+", ""),
                   regulated_q = ifelse(q < 0.05, "+", "")
     )%>%
     arrange(desc(logFC))
@@ -74,13 +70,9 @@ ebayes_fibertype <- eBayes(contrasts.fit(fit_fibertype, contrast_fibertype))
 
 #extract results
 results_fibertype <- topTable(ebayes_fibertype, coef = 1, number = Inf, sort.by = "logFC") %>%
-    dplyr::mutate(xiao=10^-(sqrt(log10(1/(P.Value^logFC))^2))) %>%
     dplyr::mutate(protein = row.names(.),
                   q = qvalue(.$P.Value)$qvalues,
-                  qiao = qvalue(.$xiao)$qvalues,
                   "-log10p" = -log10(.$P.Value),
-                  regulated_xiao = ifelse(xiao < 0.05, "+", ""),
-                  regulated_qiao = ifelse(qiao < 0.05, "+", ""),
                   regulated_q = ifelse(q < 0.05, "+", "")
     )%>%
     arrange(desc(logFC))

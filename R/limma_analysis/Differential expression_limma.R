@@ -39,13 +39,9 @@ ebayes_f_mhc1 <- eBayes(contrasts.fit(fit_f_mhc1, contrast_f_mhc1))
 
 #extract results
 results_f_mhc1 <- topTable(ebayes_f_mhc1, coef = 1, number = Inf, sort.by = "logFC") %>%
-    dplyr::mutate(xiao=10^-(sqrt(log10(1/(P.Value^logFC))^2))) %>%
     dplyr::mutate(protein = row.names(.),
                   q = qvalue(.$P.Value)$qvalues,
-                  qiao = qvalue(.$xiao)$qvalues,
                   "-log10p" = -log10(.$P.Value),
-                  regulated_xiao = ifelse(xiao < 0.05, "+", ""),
-                  regulated_qiao = ifelse(qiao < 0.05, "+", ""),
                   regulated_q = ifelse(q < 0.05, "+", "")
     )%>%
     arrange(desc(logFC))
@@ -74,13 +70,9 @@ ebayes_f_mhc2 <- eBayes(contrasts.fit(fit_f_mhc2, contrast_f_mhc2))
 
 #extract results
 results_f_mhc2 <- topTable(ebayes_f_mhc2, coef = 1, number = Inf, sort.by = "logFC") %>%
-    dplyr::mutate(xiao=10^-(sqrt(log10(1/(P.Value^logFC))^2))) %>%
     dplyr::mutate(protein = row.names(.),
                   q = qvalue(.$P.Value)$qvalues,
-                  qiao = qvalue(.$xiao)$qvalues,
                   "-log10p" = -log10(.$P.Value),
-                  regulated_xiao = ifelse(xiao < 0.05, "+", ""),
-                  regulated_qiao = ifelse(qiao < 0.05, "+", ""),
                   regulated_q = ifelse(q < 0.05, "+", "")
     )%>%
     arrange(desc(logFC))
@@ -109,13 +101,9 @@ ebayes_m_mhc1 <- eBayes(contrasts.fit(fit_m_mhc1, contrast_m_mhc1))
 
 #extract results
 results_m_mhc1 <- topTable(ebayes_m_mhc1, coef = 1, number = Inf, sort.by = "logFC") %>%
-    dplyr::mutate(xiao=10^-(sqrt(log10(1/(P.Value^logFC))^2))) %>%
     dplyr::mutate(protein = row.names(.),
                   q = qvalue(.$P.Value)$qvalues,
-                  qiao = qvalue(.$xiao)$qvalues,
                   "-log10p" = -log10(.$P.Value),
-                  regulated_xiao = ifelse(xiao < 0.05, "+", ""),
-                  regulated_qiao = ifelse(qiao < 0.05, "+", ""),
                   regulated_q = ifelse(q < 0.05, "+", "")
     )%>%
     arrange(desc(logFC))
@@ -144,13 +132,9 @@ ebayes_m_mhc2 <- eBayes(contrasts.fit(fit_m_mhc2, contrast_m_mhc2))
 
 #extract results
 results_m_mhc2 <- topTable(ebayes_m_mhc2, coef = 1, number = Inf, sort.by = "logFC") %>%
-    dplyr::mutate(xiao=10^-(sqrt(log10(1/(P.Value^logFC))^2))) %>%
     dplyr::mutate(protein = row.names(.),
                   q = qvalue(.$P.Value)$qvalues,
-                  qiao = qvalue(.$xiao)$qvalues,
                   "-log10p" = -log10(.$P.Value),
-                  regulated_xiao = ifelse(xiao < 0.05, "+", ""),
-                  regulated_qiao = ifelse(qiao < 0.05, "+", ""),
                   regulated_q = ifelse(q < 0.05, "+", "")
     )%>%
     arrange(desc(logFC))
@@ -179,13 +163,9 @@ ebayes_f_pre <- eBayes(contrasts.fit(fit_f_pre, contrast_f_pre))
 
 #extract results
 results_f_pre <- topTable(ebayes_f_pre, coef = 1, number = Inf, sort.by = "logFC") %>%
-    dplyr::mutate(xiao=10^-(sqrt(log10(1/(P.Value^logFC))^2))) %>%
     dplyr::mutate(protein = row.names(.),
                   q = qvalue(.$P.Value)$qvalues,
-                  qiao = qvalue(.$xiao)$qvalues,
                   "-log10p" = -log10(.$P.Value),
-                  regulated_xiao = ifelse(xiao < 0.05, "+", ""),
-                  regulated_qiao = ifelse(qiao < 0.05, "+", ""),
                   regulated_q = ifelse(q < 0.05, "+", "")
     )%>%
     arrange(desc(logFC))
@@ -214,13 +194,9 @@ ebayes_m_pre <- eBayes(contrasts.fit(fit_m_pre, contrast_m_pre))
 
 #extract results
 results_m_pre <- topTable(ebayes_m_pre, coef = 1, number = Inf, sort.by = "logFC") %>%
-    dplyr::mutate(xiao=10^-(sqrt(log10(1/(P.Value^logFC))^2))) %>%
     dplyr::mutate(protein = row.names(.),
                   q = qvalue(.$P.Value)$qvalues,
-                  qiao = qvalue(.$xiao)$qvalues,
                   "-log10p" = -log10(.$P.Value),
-                  regulated_xiao = ifelse(xiao < 0.05, "+", ""),
-                  regulated_qiao = ifelse(qiao < 0.05, "+", ""),
                   regulated_q = ifelse(q < 0.05, "+", "")
     )%>%
     arrange(desc(logFC))
@@ -250,13 +226,9 @@ ebayes_mhc1_pre <- eBayes(contrasts.fit(fit_mhc1_pre, contrast_mhc1_pre))
 
 #extract results
 results_mhc1_pre <- topTable(ebayes_mhc1_pre, coef = 1, number = Inf, sort.by = "logFC") %>%
-    dplyr::mutate(xiao=10^-(sqrt(log10(1/(P.Value^logFC))^2))) %>%
     dplyr::mutate(protein = row.names(.),
                   q = qvalue(.$P.Value)$qvalues,
-                  qiao = qvalue(.$xiao)$qvalues,
                   "-log10p" = -log10(.$P.Value),
-                  regulated_xiao = ifelse(xiao < 0.05, "+", ""),
-                  regulated_qiao = ifelse(qiao < 0.05, "+", ""),
                   regulated_q = ifelse(q < 0.05, "+", "")
     )%>%
     arrange(desc(logFC))
@@ -286,13 +258,9 @@ ebayes_mhc2_pre <- eBayes(contrasts.fit(fit_mhc2_pre, contrast_mhc2_pre))
 
 #extract results
 results_mhc2_pre <- topTable(ebayes_mhc2_pre, coef = 1, number = Inf, sort.by = "logFC") %>%
-    dplyr::mutate(xiao=10^-(sqrt(log10(1/(P.Value^logFC))^2))) %>%
     dplyr::mutate(protein = row.names(.),
                   q = qvalue(.$P.Value)$qvalues,
-                  qiao = qvalue(.$xiao)$qvalues,
                   "-log10p" = -log10(.$P.Value),
-                  regulated_xiao = ifelse(xiao < 0.05, "+", ""),
-                  regulated_qiao = ifelse(qiao < 0.05, "+", ""),
                   regulated_q = ifelse(q < 0.05, "+", "")
     )%>%
     arrange(desc(logFC))

@@ -34,22 +34,21 @@ fit2 <- eBayes(contrasts.fit(fit, contrast))
 
 #main effect of sex
 baseline_male_vs_female <- topTable(fit2, coef = 1, number = Inf, sort.by = "logFC") %>%
-    dplyr::mutate(xiao=10^-(sqrt(log10(1/(P.Value^logFC))^2))) %>%
     dplyr::mutate(protein = row.names(.),
                   q = qvalue(.$P.Value)$qvalues,
-                  qiao = qvalue(.$xiao)$qvalues,
                   "-log10p" = -log10(.$P.Value),
                   regulated = case_when(
                       q < 0.05 ~ "yes",
                       q > 0.05 ~ "no")) %>%
     dplyr::arrange(desc(logFC))
 
-#write.csv(baseline_male_vs_female, here::here("results/sex_main_effect.csv"))
+write.csv(baseline_male_vs_female, here::here("results/sex_main_effect.csv"))
 
 
 # Main effect of training -------------------------------------------------
 
-#load normalized log2 datadf <- vroom::vroom(here::here("data/data_log2_normalized.csv")) %>%
+#load normalized log2 data
+df <- vroom::vroom(here::here("data/data_log2_normalized.csv")) %>%
 rename_with(~ "gene", colnames(.)[1]) %>%
     column_to_rownames("gene")
 
@@ -86,13 +85,9 @@ fit2_interaction <- eBayes(contrasts.fit(fit_interaction, contrast_interaction))
 
 #Main effect of trial
 results_trial <- topTable(fit2_interaction, coef = "trial", number = Inf) %>%
-    dplyr::mutate(xiao=10^-(sqrt(log10(1/(P.Value^logFC))^2))) %>%
     dplyr::mutate(protein = row.names(.),
                   q = qvalue(.$P.Value)$qvalues,
-                  qiao = qvalue(.$xiao)$qvalues,
                   "-log10p" = -log10(.$P.Value),
-                  regulated_xiao = ifelse(xiao < 0.05, "+", ""),
-                  regulated_qiao = ifelse(qiao < 0.05, "+", ""),
                   regulated_q = ifelse(q < 0.05, "+", "")) %>%
     dplyr::arrange(desc(logFC))
 
