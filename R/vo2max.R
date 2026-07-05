@@ -78,7 +78,7 @@ brackets_vo2_lbm <- tibble(
 #define asterix for figure
 p_vo2_lbm <- tibble(
     x = 1.5,
-    y = 78,
+    y = 78.5,
     label = "p=0.292"
 )
 
@@ -90,8 +90,10 @@ vo2max_lbm_fig <- vo2_df %>%
                  position = position_dodge(width = 0.9),
                  width = 0.9, color = NA, alpha = 0.8) +
     geom_jitter(size=2, width=0, aes(color = sex), alpha = 0.5, stroke=0)+
-    scale_fill_manual(values=c("#000000", "#FF7518"))+
-    scale_color_manual(values = c("#000000", "#FF7518")) +
+    scale_fill_manual(values=c("#000000", "#FF7518"),
+                      name = NULL)+
+    scale_color_manual(values = c("#000000", "#FF7518"),
+                       name = NULL, guide = "none") +
     scale_x_discrete(labels=c("Females", "Males"))+
     ggplot2::theme_bw() +
     theme(
@@ -99,7 +101,8 @@ vo2max_lbm_fig <- vo2_df %>%
         panel.grid.minor=element_blank(),
         panel.grid.major = element_blank(),
         plot.background = element_blank(),
-        legend.position = "none",
+        legend.position = "right",
+        legend.key.size = unit(4, "mm"),
         axis.title.x = ggplot2::element_blank(),
         text = element_text(size = 6),
         axis.text.x= element_text(color="black", size = 6),
@@ -115,5 +118,5 @@ vo2max_lbm_fig <- vo2_df %>%
     ylab(expression(VO[2]*"max (ml O"[2]*"/min/kg lbm)")) +
     ggtitle("Maximal oxygen uptake \n normalized to lean mass")
 
-ggsave(plot = vo2max_lbm_fig, here::here('figures/supplementary_figure_2/vo2max_lbm_pre.pdf'), height = 60, width = 60, units = "mm")
+ggsave(plot = vo2max_lbm_fig, here::here('figures/supplementary_figure_2/vo2max_lbm_pre.pdf'), height = 60, width = 80, units = "mm")
 
