@@ -143,7 +143,7 @@ emm_muscle_norm <- rbind(contrast_gast_norm, contrast_ta_norm)
 #define p-values for figure
 p_muscle <- tibble(
     x = c(1, 2),
-    y = c(6, 13),
+    y = c(7, 16),
     label = c("p<0.001", "p=0.032")
 )
 
@@ -155,7 +155,17 @@ muscle_fig <- emm_muscle_norm %>%
     geom_errorbar(aes(ymin = lower.CL, ymax = upper.CL),
                   width = 0.1, position = position_dodge(width = 0.9),
                   linewidth = 0.25) +
-    geom_hline(yintercept = 0, linetype = "dashed") +
+    ggbeeswarm::geom_quasirandom(
+        data = df_delta,
+        aes(x = muscle, y = normalized_weight * 100),
+        inherit.aes = FALSE,
+        color = "black",
+        size = 1.5,
+        alpha = 0.6,
+        width = 0.25,
+        stroke = 0
+    ) +
+    geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.25) +
     scale_fill_manual(values = c("#E61717", "#F6CDCD")) +
     scale_x_discrete(labels = c("gast" = "Gastrocnemius", "ta" = "Tibialis anterior")) +
     ggplot2::theme_bw() +
@@ -182,7 +192,7 @@ muscle_fig <- emm_muscle_norm %>%
     ylab(expression(Delta~"Muscle mass (%)")) +
     ggtitle("Change in muscle mass \n (CSRP3 - sham)")
 
-ggsave(plot = muscle_fig, here::here('figures/figure_5/aav_muscle.pdf'), height = 65, width = 47, units = "mm")
+ggsave(plot = muscle_fig, here::here('figures/figure_5/aav_muscle.pdf'), height = 62, width = 46, units = "mm")
 
 # Overexpression CSRP3 ----------------------------------------------------
 
@@ -226,7 +236,7 @@ emm_csrp3 <- rbind(emm_gast, emm_ta)
 #define p-values for figure
 p_csrp3 <- tibble(
     x = c(1, 2),
-    y = c(6000000, 16000000),
+    y = c(7000000, 30000000),
     label = c("p=0.010", "p=0.014")
 )
 
@@ -238,8 +248,17 @@ csrp3_fig <- emm_csrp3 %>%
     geom_errorbar(aes(ymin = lower.CL, ymax = upper.CL),
                   width = 0.1, position = position_dodge(width = 0.9),
                   linewidth = 0.25) +
-    #geom_jitter(size=3, width=0, alpha = 0.5, stroke = 0)+
-    geom_hline(yintercept = 0, linetype = "dashed") +
+    ggbeeswarm::geom_quasirandom(
+        data = df_delta,
+        aes(x = muscle, y = delta_csrp3),
+        inherit.aes = FALSE,
+        color = "black",
+        size = 1.5,
+        alpha = 0.6,
+        width = 0.25,
+        stroke = 0
+    ) +
+    geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.25) +
     scale_fill_manual(values=c("#E61717", "#F6CDCD"))+
     scale_x_discrete(labels = c("gast" = "Gastrocnemius", "ta" = "Tibialis anterior")) +
     ggplot2::theme_bw() +
@@ -266,7 +285,7 @@ csrp3_fig <- emm_csrp3 %>%
     ylab(expression(Delta~"CSRP3 (a.u.)")) +
     ggtitle("Change in CSRP3 \n (CSRP3 - sham)")
 
-ggsave(plot = csrp3_fig, here::here('figures/figure_5/aav_csrp3.pdf'), height = 65, width = 53, units = "mm")
+ggsave(plot = csrp3_fig, here::here('figures/figure_5/aav_csrp3.pdf'), height = 62, width = 50, units = "mm")
 
 
 
@@ -310,7 +329,7 @@ emm_flag <- rbind(emm_flag_gast, emm_flag_ta)
 #define p-values for figure
 p_flag <- tibble(
     x = c(1, 2),
-    y = c(4500000, 22000000),
+    y = c(6500000, 35000000),
     label = c("p<0.001", "p=0.005")
 )
 
@@ -322,7 +341,16 @@ flag_fig <- emm_flag %>%
     geom_errorbar(aes(ymin = lower.CL, ymax = upper.CL),
                   width = 0.1, position = position_dodge(width = 0.9),
                   linewidth = 0.25) +
-    #geom_jitter(size=3, width=0, alpha = 0.5, stroke = 0)+
+    ggbeeswarm::geom_quasirandom(
+        data = df_delta,
+        aes(x = muscle, y = delta_flag),
+        inherit.aes = FALSE,
+        color = "black",
+        size = 1.5,
+        alpha = 0.6,
+        width = 0.25,
+        stroke = 0
+    ) +
     geom_hline(yintercept = 0, linetype = "dashed") +
     scale_fill_manual(values=c("#E61717", "#F6CDCD"))+
     scale_x_discrete(labels = c("gast" = "Gastrocnemius", "ta" = "Tibialis anterior")) +
@@ -350,7 +378,7 @@ flag_fig <- emm_flag %>%
     ylab(expression(Delta~"rAAV:CSRP3 FLAG (a.u.)")) +
     ggtitle("Change in rAAV:CSRP3 FLAG \n (CSRP3 - sham)")
 
-ggsave(plot = flag_fig, here::here('figures/figure_5/aav_flag.pdf'), height = 65, width = 53, units = "mm")
+ggsave(plot = flag_fig, here::here('figures/figure_5/aav_flag.pdf'), height = 62, width = 52, units = "mm")
 
 
 # REPLICATION GASTROCNEMIUS -----------------------------------------------
@@ -411,7 +439,7 @@ replicate_fig <- df_delta_replicate %>%
     ylab(expression(Delta~"Muscle mass (mg)")) +
     ggtitle("Replication \n (CSRP3 - sham)")
 
-ggsave(plot = replicate_fig, here::here('figures/figure_5/replicate_gast_aav.pdf'), height = 65, width = 33, units = "mm")
+#ggsave(plot = replicate_fig, here::here('figures/figure_5/replicate_gast_aav.pdf'), height = 65, width = 33, units = "mm")
 
 #bracket for replication figure
 bracket_replication <- tibble(
@@ -461,5 +489,5 @@ replicate_fig <- df_replicate %>%
     xlab(NULL) +
     ggtitle("Replication")
 
-ggsave(plot = replicate_fig, here::here('figures/figure_5/replicate_gast_aav.pdf'), height = 65, width = 33, units = "mm")
+ggsave(plot = replicate_fig, here::here('figures/figure_5/replicate_gast_aav.pdf'), height = 60, width = 33, units = "mm")
 

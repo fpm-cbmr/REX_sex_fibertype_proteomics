@@ -98,25 +98,25 @@ brackets_tnn <- tibble(
     y = c(16, 16, 16,
           17, 17, 17,
           23, 23, 23),
-    yend = c(16, 15.5, 14.5,
-             17, 16.5, 15,
-             23, 22, 22.5)
+    yend = c(16, 14.5, 15.5,
+             17, 15, 16.5,
+             23, 22.5, 22)
 )
 
 #define asterix for figure
 stars_tnn <- tibble(
     fibertype = c("mhc1", "mhc1", "mhc2"),
     x = c(1, 2, 3),
-    y = c(16.25, 17.25, 23.25),
+    y = c(16.5, 17.5, 23.5),
     label = c("*", "*", "*")
 )
 
 #boxplot of troponin isoforms
 tnn_plot <- tnn_long %>%
     ggplot(aes(x = gene, y = expression, fill = sex)) +
-    geom_boxplot(width = 1, alpha = 0.5, outlier.size = 2.5, outlier.stroke = 0) +
+    geom_boxplot(width = 1, linewidth = 0.25, alpha = 0.5, outlier.size = 0, outlier.stroke = 0) +
     geom_jitter(position = position_dodge(width = 1),
-                aes(color = sex), size = 2, alpha = 0.5, stroke = 0) +
+                aes(color = sex), size = 1, alpha = 0.5, stroke = 0) +
     scale_fill_manual(values = c("#000000", "#FF7518")) +
     scale_color_manual(values = c("#000000", "#FF7518")) +
     theme_bw() +
@@ -147,6 +147,8 @@ tnn_plot <- tnn_long %>%
             mhc1 = "Type I",
             mhc2 = "Type II"
         )))
+
+ggsave(plot = tnn_plot, here::here('figures/figure_3/tnn_figure.pdf'), height = 55, width = 70, units = "mm")
 
 
 #bar plot of troponin isoforms
@@ -217,5 +219,5 @@ tnn_plot <- emm_tnn %>%
                labeller = as_labeller(c(mhc1 = "Type I", mhc2 = "Type II")))
 
 
-ggsave(plot = tnn_plot, here::here('figures/figure_3/tnn_figure.pdf'), height = 60, width = 75, units = "mm")
+
 

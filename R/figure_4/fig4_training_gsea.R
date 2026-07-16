@@ -57,4 +57,4 @@ gsea <- merged_bp %>%
         legend.key.size = ggplot2::unit(4, units = "mm"),
         legend.spacing.y = ggplot2::unit(0.4, units = "mm"))
 
-ggsave(plot = gsea, here::here('figures/figure_4/training_gsea.pdf'), height = 70, width = 140, units = "mm")
+ggsave(plot = gsea, here::here('figures/figure_4/training_gsea.pdf'), height = 60, width = 130, units = "mm")

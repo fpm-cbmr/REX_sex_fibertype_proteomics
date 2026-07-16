@@ -83,8 +83,8 @@ ggplotify::as.ggplot(plot(
 
 ggplot2::ggsave(here::here("figures/figure_2/euler_DE_fibertype_sex.pdf"),
                 units = "mm",
-                height = 70,
-                width = 70)
+                height = 60,
+                width = 60)
 
 
 intersect(female_slow, male_fast)

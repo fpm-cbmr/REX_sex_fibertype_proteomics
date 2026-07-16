@@ -6,7 +6,7 @@ results_log2fc <- vroom::vroom(here::here("data/results_log2fc_keywords.csv"))
 log2fc_df <- readRDS(here::here("data/data_log2fc_long_keywords.RDS"))
 
 #load long form data frame
-df_long <- vroom::vroom(here::here("data/data_long_keywords.csv"))
+df_long <- readRDS(here::here("data/data_long_keywords.rds"))
 
 #create dataframe of mean log2fc of each protein
 df_mean_log2fc <- log2fc_df %>%
@@ -43,7 +43,7 @@ print(means_transport)
 
 #run linear mixed model of trial for each fiber type and sex
 lm_transport_trial <- contrast(means_transport, method = "pairwise", by = c("fibertype", "sex"), adjust = "none")
-print(lm_transport_trial)
+lm_transport_trial_df <- summary(lm_transport_trial)
 
 #linear mixed model of transport proteins log2fc
 lmm_transport_fc <- lmer(mean_log2fc ~ fibertype * sex + (1 | protein), data = transport_log2fc_df, REML = FALSE)
@@ -55,11 +55,11 @@ print(means_transport_fc)
 
 #run linear mixed model of sex for each fiber type
 lm_transport_fc_sex <- contrast(means_transport_fc, method = "pairwise", by = "fibertype", adjust = "none")
-print(lm_transport_fc_sex)
+lm_transport_fc_sex_df <- summary(lm_transport_fc_sex)
 
 #run linear mixed model of fiber type for each sex
 lm_transport_fc_fibertype <- contrast(means_transport_fc, method = "pairwise", by = "sex", adjust = "none")
-print(lm_transport_fc_fibertype)
+lm_transport_fc_fibertype_df <- summary(lm_transport_fc_fibertype)
 
 # define lines for figure
 lines_transport <- tibble(
@@ -81,7 +81,7 @@ brackets_transport <- tibble(
     y     = c(0.3, 0.3, 0.3,
               0.05, 0.05, 0.05),
     yend  = c(0.3, 0.2, -0.1,
-              0.05, -0.1, -0.15)
+              0.05, -0.05, -0.1)
 )
 
 # define p-values for figure
@@ -92,8 +92,8 @@ p_transport <- tibble(
               1.5, 1.5),
     y     = c(0.55, 0.35,
               0.55, 0.10),
-    label = c("p<0.001", "p<0.001",
-              "p<0.001", "p=0.064")
+    label = c("p=0.001", "p<0.001",
+              "p=0.001", "p=0.064")
 )
 
 #Box plot
@@ -101,12 +101,11 @@ transport_fig <- transport_log2fc_df %>%
     ggplot(aes(x = fibertype, y = mean_log2fc,
                fill = fibertype,
                group = interaction(fibertype, sex))) +
-    geom_violin(trim = TRUE, width = 1, linewidth = 0.5, alpha = 0.5,
+    geom_violin(trim = TRUE, width = 1, linewidth = 0.25, alpha = 0.5,
                 position = position_dodge(width = 1),
                 aes(color = sex)) +
-    geom_boxplot(width=0.25, position = position_dodge(width = 1), color="black", fill="white", alpha=0.5, outlier.size = 1.5, outlier.stroke = 0)+
-    geom_jitter(position = position_dodge(width = 1),color = "black", size = 2, alpha = 0.5, stroke = 0) +
-    geom_hline(yintercept = 0, linetype = "dashed") +
+    geom_boxplot(width=0.25, linewidth = 0.25, position = position_dodge(width = 1), color="black", fill="white", alpha=0.5, outlier.size = 0, outlier.stroke = 0)+
+    geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.25) +
     scale_color_manual(values = c("female" = "black", "male" = "#FF7518"),
                        labels = c("female" = "Female", "male" = "Male")) +
     scale_fill_manual(values = c("mhc1" = "#440154FF", "mhc2" = "#67CC5CFF"),
@@ -130,13 +129,15 @@ transport_fig <- transport_log2fc_df %>%
         plot.title = element_text(size = 8, face = "bold", hjust = 0.5)
     ) +
     facet_wrap(~sex, labeller = labeller(sex = c("female" = "Females", "male" = "Males"))) +
-    scale_y_continuous(limits = c(-0.8, 0.6)) +
+    #scale_y_continuous(limits = c(-0.8, 0.6)) +
     geom_segment(data = brackets_transport, aes(x = x, xend = xend, y = y, yend = yend), size = 0.25, inherit.aes = FALSE) +
     geom_segment(data = lines_transport, aes(x = x, xend = xend, y = y, yend = yend), size = 0.25, inherit.aes = FALSE) +
     geom_text(data = p_transport, aes(x = x, y = y, label = label), inherit.aes = FALSE, size = 2) +
     xlab("") +
     ylab("Log2fold change (post - pre)") +
-    ggtitle("One-carbon compound \n and gas transport")
+    ggtitle("Gas transport")
+
+ggsave(plot = transport_fig, here::here('figures/figure_4/transport_log2fc.pdf'), height = 60, width = 60, units = "mm")
 
 #Bar plot
 #Compute emmeans from linear mixed model
@@ -214,6 +215,6 @@ transport_fig <- ggplot(emm_transport, aes(x = fibertype, y = emmean, fill = fib
     ylab("Log2fold change (post - pre)") +
     ggtitle("One-carbon compound \n and gas transport")
 
-ggsave(plot = transport_fig, here::here('figures/figure_4/transport_log2fc.pdf'), height = 72, width = 60, units = "mm")
+
 
 

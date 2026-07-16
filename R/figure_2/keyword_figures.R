@@ -22,6 +22,19 @@ df_pre_mean <- df_pre %>%
     ungroup() %>%
     merge(annotations, by="protein", all.x = TRUE)
 
+#Load log2fold difference between fiber types
+log2fd_m <- vroom::vroom(here::here("results/differential_expression_male_fibertypes.csv")) %>%
+    mutate(sex = "male")
+log2fd_f <- vroom::vroom(here::here("results/differential_expression_female_fibertypes.csv")) %>%
+    mutate(sex = "female")
+
+#create keyword data frame for log2fd for fibertypes
+log2fd_df <- rbind(log2fd_m, log2fd_f) %>%
+    merge(annotations, by="protein", all.x = TRUE)
+
+#write.csv(log2fd_df,
+#here::here("data/results_fibertypes_keywords.csv"))
+
 # CYTOSOLIC RIBOSOME ------------------------------------------
 
 # Make fibertype a factor with type II as reference
@@ -42,11 +55,12 @@ print(means_ribo)
 
 #run linear model of sex for each fibertype
 lm_ribo_sex <- contrast(means_ribo, method = "pairwise", by = "fibertype")
-print(lm_ribo_sex)
+lm_ribo_sex_df <- summary(lm_ribo_sex)
+
 
 #run linear model of fibertype for each sex
 lm_ribo_fibertype <- contrast(means_ribo, method = "pairwise", by = "sex")
-print(lm_ribo_fibertype)
+lm_ribo_fibertype_df <- summary(lm_ribo_fibertype)
 
 # MITOCHONDRIA ------------------------------------------------------------
 
@@ -65,32 +79,28 @@ print(means_mito)
 
 #run linear model of sex for each fibertype
 lm_mito_sex <- contrast(means_mito, method = "pairwise", by = "fibertype")
-print(lm_mito_sex)
+lm_mito_sex_df <- summary(lm_mito_sex)
 
 #run linear model of fibertype for each sex
 lm_mito_fibertype <- contrast(means_mito, method = "pairwise", by = "sex")
-print(lm_mito_fibertype)
+lm_mito_fibertype_df <- summary(lm_mito_fibertype)
 
 
-#Compute emmeans from linear mixed model
-emm_ribo <- emmeans(lm_ribo_fibertype, ~ sex | sex) %>%
-    as.data.frame() %>%
-    mutate(cc = "Ribosome") %>%
-    mutate(
-        fibertype = case_when(
-            estimate < 0 ~ "type1",
-            estimate > 0 ~ "type2"))
+# MITOCHONDRIA AND RIBOSOME FIGURES -----------------------------------------------------------------
 
+#filter for cc
+ribo_log2fd <- log2fd_df %>%
+    filter(
+        grepl("cytosolic ribosome", gocc, ignore.case = TRUE)) %>%
+    mutate(cc = "ribosome")
 
-emm_mito <- emmeans(lm_mito_fibertype, ~ sex | sex) %>%
-    as.data.frame() %>%
-    mutate(cc = "Mitochondria") %>%
-    mutate(
-        fibertype = case_when(
-            estimate < 0 ~ "type1",
-            estimate > 0 ~ "type2"))
+mito_log2fd <- log2fd_df %>%
+    filter(
+        grepl("mitochondrion", gocc, ignore.case = TRUE)) %>%
+    mutate(cc = "mitochondria")
 
-emm_cc <- rbind(emm_ribo, emm_mito)
+#combine data frames for figure
+log2fd_cc <- rbind(ribo_log2fd, mito_log2fd)
 
 
 #define text for figure
@@ -99,22 +109,20 @@ p_cc <- tibble(
             "male", "male"),
     x = c(1, 2,
           1, 2),
-    y = c(0.03, 0.20,
-          0.03, 0.24),
+    y = c(3.5, 1.0,
+          5.0, 1.25),
     label = c("p<0.001", "p<0.001",
               "p<0.001", "p<0.001")
 )
 
 ##MITOCHONDRIA AND RIBOSOME FIGURE##
-cc_fig <- ggplot(emm_cc, aes(x = cc, y = estimate, fill = fibertype)) +
-    geom_col(position = position_dodge(width = 0.9),
-             width = 0.9, color = NA, alpha = 0.7) +
-    geom_errorbar(aes(ymin = lower.CL, ymax = upper.CL),
-                  width = 0.1, position = position_dodge(width = 0.9),
-                  linewidth = 0.25) +
+cc_fig <- log2fd_cc %>%
+    ggplot(aes(x = cc, y = logFC, fill = cc)) +
+    geom_violin(trim = TRUE, width = 1, linewidth = 0.25, alpha = 0.5) +
+    geom_boxplot(width = 0.25, linewidth = 0.25, color = "black", fill = "white", alpha = 0.5, outlier.size = 0, outlier.stroke = 0) +
     geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.25) +
     scale_fill_manual(values=c("#440154FF", "#67CC5CFF"))+
-    scale_x_discrete(labels = c("mhc1" = "Type I", "mhc2" = "Type II")) +
+    scale_x_discrete(labels = c("mitochondria" = "Mitochondria", "ribosome" = "Ribosome")) +
     theme_bw() +
     theme(
         panel.background = element_rect(color = "black", fill = NA, linewidth = 0.5),
@@ -130,15 +138,13 @@ cc_fig <- ggplot(emm_cc, aes(x = cc, y = estimate, fill = fibertype)) +
         plot.title = element_text(size = 8, face = "bold", hjust = 0.5)
     ) +
     facet_wrap(~sex, labeller = labeller(sex = c("female" = "Females", "male" = "Males"))) +
-    #scale_y_continuous(limits = c(-0.5, 2)) +
-    #geom_segment(data = brackets_cc, aes(x = x, xend = xend, y = y, yend = yend), size = 0.25, inherit.aes = FALSE) +
+    #scale_y_continuous(limits = c(-1, 0.5)) +
     geom_text(data = p_cc, aes(x = x, y = y, label = label), inherit.aes = FALSE, size = 2) +
-    xlab(NULL) +
+    xlab("") +
     ylab("Log2fold difference (type II - type I)") +
     ggtitle("Mitochondria and ribosomes")
 
 ggsave(plot = cc_fig, here::here('figures/figure_2/mito_ribo_figure.pdf'), height = 60, width = 90, units = "mm")
-
 
 # GLYCOLYSIS --------------------------------------------------------------
 #filter for glycolysis
@@ -156,11 +162,11 @@ print(means_glyco)
 
 #run linear model of sex for each fibertype
 lm_glyco_sex <- contrast(means_glyco, method = "pairwise", by = "fibertype")
-print(lm_glyco_sex)
+lm_glyco_sex_df <- summary(lm_glyco_sex)
 
 #run linear model of fibertype for each sex
 lm_glyco_fibertype <- contrast(means_glyco, method = "pairwise", by = "sex")
-print(lm_glyco_fibertype)
+lm_glyco_fibertype_df <- summary(lm_glyco_fibertype)
 
 
 # FATTY ACID METABOLISM ---------------------------------------------------
@@ -180,12 +186,26 @@ print(means_fa)
 
 #run linear model of sex for each fibertype
 lm_fa_sex <- contrast(means_fa, method = "pairwise", by = "fibertype")
-print(lm_fa_sex)
+lm_fa_sex_df <- summary(lm_fa_sex)
 
 #run linear model of fibertype for each sex
 lm_fa_fibertype <- contrast(means_fa, method = "pairwise", by = "sex")
-print(lm_fa_fibertype)
+lm_fa_fibertype_df <- summary(lm_fa_fibertype)
 
+
+#filter for bp
+glyco_log2fd <- log2fd_df %>%
+    filter(
+        grepl("Glycolysis", gobp, ignore.case = TRUE)) %>%
+    mutate(bp = "Glycolysis")
+
+fa_log2fd <- log2fd_df %>%
+    filter(
+        grepl("fatty acid metabolic process", gobp, ignore.case = TRUE)) %>%
+    mutate(bp = "Fatty acid metabolism")
+
+#combine data frames for figure
+log2fd_bp <- rbind(glyco_log2fd, fa_log2fd)
 
 #Compute emmeans from linear mixed model
 emm_glyco <- emmeans(lm_glyco_fibertype, ~ sex | sex) %>%
@@ -214,22 +234,20 @@ p_bp <- tibble(
             "male", "male"),
     x = c(1, 2,
           1, 2),
-    y = c(0.1, 0.9,
-          0.1, 1.1),
+    y = c(0.8, 1.3,
+          0.4, 1.6),
     label = c("p<0.001", "p<0.001",
               "p<0.001", "p<0.001")
 )
 
 ##FIGURE OF GLYCOLYSIS AND FATTY ACID METABOLISM##
-bp_fig <- ggplot(emm_bp, aes(x = bp, y = estimate, fill = fibertype)) +
-    geom_col(position = position_dodge(width = 0.9),
-             width = 0.9, color = NA, alpha = 0.7) +
-    geom_errorbar(aes(ymin = lower.CL, ymax = upper.CL),
-                  width = 0.1, position = position_dodge(width = 0.9),
-                  linewidth = 0.25) +
+bp_fig <- log2fd_bp %>%
+    ggplot(aes(x = bp, y = logFC, fill = bp)) +
+    geom_violin(trim = TRUE, width = 1, linewidth = 0.25, alpha = 0.5) +
+    geom_boxplot(width = 0.25, linewidth = 0.25, color = "black", fill = "white", alpha = 0.5, outlier.size = 0, outlier.stroke = 0) +
     geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.25) +
     scale_fill_manual(values=c("#440154FF", "#67CC5CFF"))+
-    scale_x_discrete(labels = c("mhc1" = "Type I", "mhc2" = "Type II")) +
+    scale_x_discrete(labels = c("Fatty acid metabolism" = "Fatty acid metabolism", "Glycolysis" = "Glycolysis")) +
     theme_bw() +
     theme(
         panel.background = element_rect(color = "black", fill = NA, linewidth = 0.5),
@@ -245,10 +263,9 @@ bp_fig <- ggplot(emm_bp, aes(x = bp, y = estimate, fill = fibertype)) +
         plot.title = element_text(size = 8, face = "bold", hjust = 0.5)
     ) +
     facet_wrap(~sex, labeller = labeller(sex = c("female" = "Females", "male" = "Males"))) +
-    #scale_y_continuous(limits = c(-0.5, 2)) +
-    #geom_segment(data = brackets_bp, aes(x = x, xend = xend, y = y, yend = yend), size = 0.25, inherit.aes = FALSE) +
+    #scale_y_continuous(limits = c(-1, 0.5)) +
     geom_text(data = p_bp, aes(x = x, y = y, label = label), inherit.aes = FALSE, size = 2) +
-    xlab(NULL) +
+    xlab("") +
     ylab("Log2fold difference (type II - type I)") +
     ggtitle("Glycolysis and fatty acid metabolism")
 

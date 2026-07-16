@@ -49,7 +49,7 @@ print(means_if)
 
 #run linear mixed model of trial for each fiber type and sex
 lm_if_trial <- contrast(means_if, method = "pairwise", by = c("fibertype", "sex"), adjust = "none")
-print(lm_if_trial)
+lm_if_trial_df <- summary(lm_if_trial)
 
 #linear mixed model of intermediate filament log2fc
 lmm_if_fc <- lmer(mean_log2fc ~ fibertype * sex + (1 | protein), data = if_log2fc_df, REML = FALSE)
@@ -61,11 +61,11 @@ print(means_if_fc)
 
 #run linear mixed model of sex for each fiber type
 lm_if_fc_sex <- contrast(means_if_fc, method = "pairwise", by = "fibertype", adjust = "none")
-print(lm_if_fc_sex)
+lm_if_fc_sex_df <- summary(lm_if_fc_sex)
 
 #run linear mixed model of fibertype for each sex
-lm_if_fc_trial <- contrast(means_if_fc, method = "pairwise", by = "sex", adjust = "none")
-print(lm_if_fc_trial)
+lm_if_fc_fibertype <- contrast(means_if_fc, method = "pairwise", by = "sex", adjust = "none")
+lm_if_fc_fibertype_df <- summary(lm_if_fc_sex)
 
 #define brackets for figure
 brackets_if <- tibble(
@@ -96,13 +96,12 @@ p_if <- tibble(
 #Box plot of mean intermediate filament log2fc
 if_fig <- if_log2fc_df %>%
     ggplot(aes(x = sex, y = mean_log2fc, fill = sex)) +
-    geom_violin(trim = TRUE, width=1, linewidth = 0.5, alpha=0.5)+
-    geom_boxplot(width=0.25, color="black", fill="white", alpha=0.5, outlier.size = 2, outlier.stroke = 0)+
-    geom_jitter(size=2, width=0, alpha = 0.5, stroke=0)+
+    geom_violin(trim = TRUE, width=1, linewidth = 0.25, alpha=0.5)+
+    geom_boxplot(width=0.25, linewidth = 0.25, color="black", fill="white", alpha=0.5, outlier.size = 0, outlier.stroke = 0)+
     scale_fill_manual(values=c("#000000", "#FF7518"))+
     scale_color_manual(values = c("#000000", "#FF7518")) +
     scale_x_discrete(labels=c("Females", "Males"))+
-    geom_hline(yintercept=0, linetype="dashed") +
+    geom_hline(yintercept=0, linetype="dashed", linewidth = 0.25) +
     ggplot2::theme_bw() +
     theme(
         panel.background = element_rect(color = "black", fill=NA, linewidth = 0.5),
@@ -120,12 +119,14 @@ if_fig <- if_log2fc_df %>%
         plot.title = element_text(size = 8, face = "bold", hjust = 0.5)
     )+
     facet_wrap(~fibertype, labeller = labeller(fibertype = c("mhc1" = "Type I", "mhc2" = "Type II"))) +
-    scale_y_continuous(limits = c(-1, 3)) +
+    #scale_y_continuous(limits = c(-1, 3)) +
     geom_segment(data = brackets_if, aes(x = x, xend = xend, y = y, yend = yend), size = 0.25, inherit.aes = FALSE) +
     geom_text(data = p_if, aes(x = x, y = y, label = label), inherit.aes = FALSE, size = 2) +
     xlab("none") +
     ylab("Log2fold change (post - pre)") +
     ggtitle("Intermediate filament proteins ")
+
+ggsave(plot = if_fig, here::here('figures/figure_4/i_filament_log2fc.pdf'), height = 60, width = 50, units = "mm")
 
 #Bar plot of mean intermediate filament log2fc
 #Compute emmeans from linear mixed model
@@ -192,9 +193,3 @@ if_fig <- ggplot(emm_if, aes(x = sex, y = emmean, fill = sex)) +
     xlab("none") +
     ylab("Log2fold change (post - pre)") +
     ggtitle("Intermediate filament proteins ")
-
-ggsave(plot = if_fig, here::here('figures/figure_4/i_filament_log2fc.pdf'), height = 70, width = 60, units = "mm")
-
-
-
-

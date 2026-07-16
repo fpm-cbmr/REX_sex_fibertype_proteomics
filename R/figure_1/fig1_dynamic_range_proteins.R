@@ -120,7 +120,7 @@ dynamic_range_fig <- data_mean %>%
             filter(label != ""),  # Ensure only labeled proteins are used for plotting
         aes(label = label, fill = cell),  # Use fill only for proteins with cell associations
         color = "black",
-        size = 1.75,
+        size = 2,
         label.padding = 0.1,
         min.segment.length = 0.1,
         segment.size = 0.2,
@@ -142,4 +142,4 @@ dynamic_range_fig <- data_mean %>%
     xlab("Protein rank") +
     ylab("% total intensity (log2)")
 
-#ggsave(plot = dynamic_range_fig, here::here('figures/figure_1/figure1_dynamic_range.pdf'), height = 60, width = 60, units = "mm")
+ggsave(plot = dynamic_range_fig, here::here('figures/figure_1/figure1_dynamic_range.pdf'), height = 60, width = 60, units = "mm")

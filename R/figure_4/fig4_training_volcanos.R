@@ -138,7 +138,7 @@ merged <- merged_df %>%
         aes(label = label,
             fill = regulated),
         color = "black",
-        size = 1.75,
+        size = 2,
         label.padding = 0.1,
         min.segment.length = 0.1,
         segment.size = 0.2,
@@ -155,7 +155,7 @@ merged <- merged_df %>%
     xlab("Log2fold change (post - pre)") +
     ylab("-log10 p-value")
 
-ggsave(plot = merged, here::here('figures/figure_4/volcano_sex_fibertype.pdf'), height = 120, width = 120, units = "mm")
+ggsave(plot = merged, here::here('figures/figure_4/volcano_sex_fibertype.pdf'), height = 115, width = 115, units = "mm")
 
 #Main effect of training
 main_time <- vroom::vroom(here::here("results/trial_main_effect.csv"))
@@ -211,7 +211,7 @@ main_volcano <- main_time %>%
         aes(label = label,
             fill = regulated),
         color = "black",
-        size = 1.75,
+        size = 2,
         label.padding = 0.1,
         min.segment.length = 0.1,
         segment.size = 0.2,
@@ -227,4 +227,4 @@ main_volcano <- main_time %>%
     ylab("-log10 p-value") +
     guides(fill = FALSE)
 
-ggsave(plot = main_volcano, here::here('figures/figure_4/volcano_main_effect_trial.pdf'), height = 70, width = 70, units = "mm")
+ggsave(plot = main_volcano, here::here('figures/figure_4/volcano_main_effect_trial.pdf'), height = 65, width = 65, units = "mm")

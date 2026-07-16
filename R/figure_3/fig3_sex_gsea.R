@@ -46,23 +46,50 @@ gsea <- sex_bp %>%
         "negative regulation of peptidase activity",
         "regulation of cellular catabolic process"
     )) |>
-    ggplot(aes(x = fibertype, y = Description, color = qvalue, size = abs(NES))) +
+    ggplot(
+        aes(
+            x = fibertype,
+            y = Description,
+            color = qvalue,
+            size = abs(NES)
+        )
+    ) +
     geom_point() +
-    facet_wrap(~regulated, labeller = labeller(regulated = c("female" = "Enriched in females", "male" = "Enriched in males"))) +
-    scale_x_discrete(breaks = c("mhc1", "mhc2"),
-                     labels = c("Type I", "Type II" )) +
+    facet_wrap(
+        ~regulated,
+        labeller = labeller(
+            regulated = c(
+                "female" = "Enriched in females",
+                "male" = "Enriched in males"
+            )
+        )
+    ) +
+    scale_x_discrete(
+        breaks = c("mhc1", "mhc2"),
+        labels = c("Type I", "Type II")
+    ) +
     theme_bw() +
-    theme_bw() +
-    theme(text = ggplot2::element_text(size = 7),
-          strip.text = ggplot2::element_text(size = 7),
-          legend.key.size = ggplot2::unit(2, units = "mm"),
-          legend.box.margin = margin(0, -10, 0, -10),
-          plot.margin = margin(1,5,1,1)) +
+    theme(
+        text = ggplot2::element_text(size = 7),
+        strip.text = ggplot2::element_text(size = 6),
+        legend.key.size = ggplot2::unit(2, units = "mm"),
+
+        legend.position = "right",
+        legend.location = "plot",
+        legend.justification.right = "top",
+        legend.box = "vertical",
+        legend.box.just = "top",
+
+        legend.box.margin = margin(0, -10, 0, -10),
+        plot.margin = margin(1, 5, 1, 1)
+    ) +
     xlab("") +
     ylab("") +
-    labs(color = "FDR", size = "NES")
-
-#ggsave(plot = gsea, here::here('figures/figure_3/sex_gsea.pdf'), height = 80, width = 120, units = "mm")
+    labs(
+        color = "FDR",
+        size = "NES"
+    )
+ggsave(plot = gsea, here::here('figures/figure_3/sex_gsea.pdf'), height = 80, width = 110, units = "mm")
 
 
 # LINEAR MIXED MODEL OF ENRICHED TERMS ------------------------------------

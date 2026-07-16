@@ -85,7 +85,7 @@ correlations_pre_plot <- correlations_csa_pre %>%
     ylab("-log10 p-value") +
     ggtitle("Protein abundance at baseline \n and fiber hypertrophy correlations")
 
-ggsave(plot = correlations_pre_plot, here::here('figures/figure_6/correlations_pre_csa.pdf'), height = 60, width = 60, units = "mm")
+ggsave(plot = correlations_pre_plot, here::here('figures/figure_6/correlations_pre_csa.pdf'), height = 60, width = 50, units = "mm")
 
 
 #enrichment analysis using ranked protein list, ranked based on correlation
@@ -164,4 +164,4 @@ enriched_r_pre_plot <- gsea_r_csa_pre_bp %>%
     ) +
     ggtitle("GO:BP terms of baseline protein abundance \n correlated with fiber hypertrophy")
 
-ggsave(plot = enriched_r_pre_plot, here::here('figures/figure_6/enrichment_pre_csa.pdf'), height = 60, width = 85, units = "mm")
+ggsave(plot = enriched_r_pre_plot, here::here('figures/figure_6/enrichment_pre_csa.pdf'), height = 60, width = 80, units = "mm")

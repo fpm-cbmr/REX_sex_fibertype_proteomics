@@ -86,52 +86,8 @@ p_if <- tibble(
 #log2fold difference figure (box plot)
 if_fig <- if_log2fd %>%
     ggplot(aes(x = fibertype, y = logFC, fill = fibertype)) +
-    geom_violin(trim = TRUE, width = 1, linewidth = 0.5, alpha = 0.5) +
-    geom_boxplot(width = 0.25, color = "black", fill = "white", alpha = 0.5, outlier.size = 2.5, outlier.stroke = 0) +
-    geom_jitter(size=2.5, width=0, height=0, alpha = 0.5,  stroke = 0)+
-    geom_hline(yintercept = 0, linetype = "dashed") +
-    scale_fill_manual(values=c("#440154FF", "#67CC5CFF"))+
-    scale_x_discrete(labels = c("mhc1" = "Type I", "mhc2" = "Type II")) +
-    theme_bw() +
-    theme(
-        panel.background = element_rect(color = "black", fill = NA, linewidth = 0.5),
-        panel.grid.minor = element_blank(),
-        panel.grid.major = element_blank(),
-        plot.background = element_blank(),
-        legend.position = "none",
-        text = element_text(size = 6),
-        axis.text.x = element_text(color = "black", size = 6),
-        axis.text.y = element_text(color = "black", size = 6),
-        axis.line = element_line(colour = "black"),
-        strip.text = element_text(size = 8),
-        plot.title = element_text(size = 8, face = "bold", hjust = 0.5)
-    ) +
-    scale_y_continuous(limits = c(-1, 0.5)) +
-    geom_text(data = p_if, aes(x = x, y = y, label = label), inherit.aes = FALSE, size = 2) +
-    xlab("") +
-    ylab("Log2fold difference (male - female)") +
-    ggtitle("Intermediate filament proteins")
-
-#log2fold difference figure (bar plot)
-#Compute emmeans from linear mixed model
-emm_if <- emmeans(lm_if_sex, ~ fibertype | fibertype) %>%
-    as.data.frame()
-
-#define text for figure
-p_if <- tibble(
-    fibertype = c("mhc1", "mhc2"),
-    x = c(1, 2),
-    y = c(0.1, 0.1),
-    label = c("p=0.019", "p=0.006")
-)
-
-##FIGURE##
-if_fig <- ggplot(emm_if, aes(x = fibertype, y = estimate, fill = fibertype)) +
-    geom_col(position = position_dodge(width = 0.9),
-             width = 0.9, color = NA, alpha = 0.7) +
-    geom_errorbar(aes(ymin = lower.CL, ymax = upper.CL),
-                  width = 0.1, position = position_dodge(width = 0.9),
-                  linewidth = 0.25) +
+    geom_violin(trim = TRUE, width = 1, linewidth = 0.25, alpha = 0.5) +
+    geom_boxplot(width = 0.25, linewidth = 0.25, color = "black", fill = "white", alpha = 0.5, outlier.size = 0, outlier.stroke = 0) +
     geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.25) +
     scale_fill_manual(values=c("#440154FF", "#67CC5CFF"))+
     scale_x_discrete(labels = c("mhc1" = "Type I", "mhc2" = "Type II")) +
@@ -149,7 +105,7 @@ if_fig <- ggplot(emm_if, aes(x = fibertype, y = estimate, fill = fibertype)) +
         strip.text = element_text(size = 8),
         plot.title = element_text(size = 8, face = "bold", hjust = 0.5)
     ) +
-    scale_y_continuous(limits = c(-0.5, 0.2)) +
+    scale_y_continuous(limits = c(-1, 0.5)) +
     geom_text(data = p_if, aes(x = x, y = y, label = label), inherit.aes = FALSE, size = 2) +
     xlab("") +
     ylab("Log2fold difference (male - female)") +

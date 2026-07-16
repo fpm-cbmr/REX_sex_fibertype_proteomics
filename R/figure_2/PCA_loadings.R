@@ -143,35 +143,39 @@ ggplot2::ggsave(here::here("figures/figure_2/PC1_loadings.pdf"),
 
 #visualize contribution to PC2
 loadings_pre %>%
-    dplyr::select(protein,
-                  PC2,
-                  pc2_contribution) %>%
+    dplyr::select(
+        protein,
+        PC2,
+        pc2_contribution
+    ) %>%
     arrange(desc(pc2_contribution)) %>%
     slice_head(n = 20) %>%
     dplyr::mutate(
-        protein = factor(protein, levels = rev(c(
-            "NDUFC1",
-            "ARG1",
-            "FLG",
-            "AZGP1",
-            "KRT10",
-            "KRT17",
-            "KRT1",
-            "PIP",
-            "S100A7",
-            "JUP",
-            "KRT9",
-            "KRT5",
-            "DSP",
-            "DSC1",
-            "KRT6B",
-            "DCD",
-            "KRT14",
-            "KRT6A",
-            "DSG1",
-            "KRT16"
-
-        )))
+        protein = factor(
+            protein,
+            levels = rev(c(
+                "NDUFC1",
+                "ARG1",
+                "FLG",
+                "AZGP1",
+                "KRT10",
+                "KRT17",
+                "KRT1",
+                "PIP",
+                "S100A7",
+                "JUP",
+                "KRT9",
+                "KRT5",
+                "DSP",
+                "DSC1",
+                "KRT6B",
+                "DCD",
+                "KRT14",
+                "KRT6A",
+                "DSG1",
+                "KRT16"
+            ))
+        )
     ) |>
     ggplot2::ggplot(
         ggplot2::aes(
@@ -181,28 +185,39 @@ loadings_pre %>%
             color = pc2_contribution
         )
     ) +
-    ggplot2::geom_col(alpha = 0.75,) +
+    ggplot2::geom_col(alpha = 0.75) +
     ggplot2::theme_bw() +
     ggplot2::scale_fill_viridis_c(
         "Contribution\nto PC2 (%)",
-        option = "plasma"
+        option = "plasma",
+        breaks = function(x) range(x),
+        labels = scales::label_number(accuracy = 0.1)
     ) +
     ggplot2::ggtitle("PC2 drivers") +
-    ggplot2::geom_vline(xintercept = 0, colour="black") +
+    ggplot2::geom_vline(
+        xintercept = 0,
+        colour = "black"
+    ) +
     ggplot2::scale_color_viridis_c(
         "Contribution\nto PC2 (%)",
-        option = "plasma"
+        option = "plasma",
+        breaks = function(x) range(x),
+        labels = scales::label_number(accuracy = 0.1)
     ) +
     ggplot2::theme(
-        legend.key.size = ggplot2::unit(3, "mm"),
-        text = ggplot2::element_text(face = "bold",size = 6, colour = "black"),
+        legend.key.size = ggplot2::unit(1.5, "mm"),
+        text = ggplot2::element_text(
+            face = "bold",
+            size = 6,
+            colour = "black"
+        ),
         plot.title = ggplot2::element_blank(),
         axis.title.y = ggplot2::element_blank(),
         legend.position = "top",
-        legend.box.margin = margin(-10, 0, -10, 0)
+        legend.box.margin = ggplot2::margin(-10, 0, -10, 0)
     )
 
 ggplot2::ggsave(here::here("figures/figure_3/PC2_loadings.pdf"),
                 units = "mm",
                 height = 60,
-                width = 40)
+                width = 35)

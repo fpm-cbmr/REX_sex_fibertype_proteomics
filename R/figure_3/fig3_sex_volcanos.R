@@ -203,9 +203,7 @@ main_sex <- results_male_female |>
 # combined facet ----------------------------------------------------------
 
 tmp <- merged_df_sex |>
-    dplyr::select(!c(`regulated_xiao`,
-                     `regulated_qiao`,
-                     `regulated_q`))
+    dplyr::select(!`regulated_q`)
 
 facet_df <- results_male_female |>
     dplyr::mutate(fibertype = "Main effect") |>
@@ -224,6 +222,7 @@ facet_df %>%
     ) +
     theme_bw() +
     theme(legend.position = "top",
+          legend.text = ggplot2::element_text(size = 6),
           text = ggplot2::element_text(size = 6),
           plot.margin = ggplot2::margin(0, 0, 0, 0),
           legend.box.margin = ggplot2::margin(-10, 0, -10, 0),
@@ -236,7 +235,7 @@ facet_df %>%
         aes(label = label,
             fill = regulated),
         color = "black",
-        size = 1.75,
+        size = 2,
         label.padding = 0.1,
         min.segment.length = 0.1,
         segment.size = 0.2,
@@ -253,4 +252,4 @@ facet_df %>%
     xlab("Log2fold difference (male - female)") +
     ylab("-log10 p-value")
 
-#ggsave(here::here('figures/figure_3/sex_volcano.pdf'), height = 60, width = 150, units = "mm")
+ggsave(here::here('figures/figure_3/sex_volcano.pdf'), height = 60, width = 145, units = "mm")

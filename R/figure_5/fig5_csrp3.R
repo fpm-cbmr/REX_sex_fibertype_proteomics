@@ -104,15 +104,15 @@ fdr_csrp3 <- tibble(
 
 # box plot of CSRP3
 csrp3_fig <- csrp3 %>%
-    ggplot(aes(x = fibertype, y = log2fc)) +
-    geom_violin(aes(fill = fibertype), trim = TRUE, width = 1, linewidth = 0.5, alpha = 0.5, show.legend = FALSE) +
-    geom_boxplot(width = 0.25, color = "black", fill = "white", alpha = 0.5) +
-    geom_jitter(aes(color = sex), size = 3, width = 0, alpha = 0.5, stroke = 0) +
-    geom_hline(yintercept = 0, linetype = "dashed") +
+    ggplot(aes(x = fibertype, y = log2fc, fill = fibertype)) +
+    geom_boxplot(width=0.5, linewidth = 0.25, alpha=0.5, outlier.size = 0, outlier.stroke = 0)+
+    geom_jitter(size=2, width=0, aes(color = sex), alpha = 0.5, stroke=0)+
+    geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.25) +
     scale_fill_manual(
         values = c("mhc1" = "#440154FF", "mhc2" = "#67CC5CFF"),
         labels = c("mhc1" = "Type I", "mhc2" = "Type II")
     ) +
+    guides(fill = "none") +
     scale_color_manual(
         name = NULL,
         values = c("male" = "#FF7518", "female" = "#000000"),
@@ -141,6 +141,8 @@ csrp3_fig <- csrp3 %>%
     xlab("none") +
     ylab("CSRP3 log2fold change (post - pre)")
 
+#ggsave(plot = csrp3_fig, here::here('figures/figure_5/csrp3.pdf'), height = 60, width = 60, units = "mm")
+
 
 #Bar plot of CSRP3
 
@@ -152,14 +154,14 @@ emm_csrp3 <- emmeans(lm_csrp3_trial, ~ fibertype) %>%
 brackets_csrp3 <- tibble(
     x = c(1, 1, 2),
     xend = c(2, 1, 2),
-    y = c(1.0, 1.0, 1.0),
-    yend = c(1.0, 0.6, 0.9)
+    y = c(1.7, 1.7, 1.7),
+    yend = c(1.7, 1.5, 1.6)
 )
 
-#define p for figure
+#define fdr for figure
 p_csrp3 <- tibble(
     x = 1.5,
-    y = 1.1,
+    y = 1.8,
     label = "p=0.005"
 )
 
@@ -171,11 +173,26 @@ csrp3_fig <- emm_csrp3 %>%
     geom_errorbar(aes(ymin = lower.CL, ymax = upper.CL),
                   width = 0.1, position = position_dodge(width = 0.9),
                   linewidth = 0.25) +
-    geom_hline(yintercept = 0, linetype = "dashed") +
+    ggbeeswarm::geom_quasirandom(
+        data = csrp3,
+        aes(x = fibertype, y = log2fc, color = sex),
+        inherit.aes = FALSE,
+        size = 1.5,
+        alpha = 0.6,
+        width = 0.25,
+        stroke = 0
+    ) +
+    geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.25) +
     scale_fill_manual(
         name = NULL,
         values = c("mhc1" = "#440154FF", "mhc2" = "#67CC5CFF"),
         labels = c("mhc1" = "Type I", "mhc2" = "Type II")
+    ) +
+    guides(fill = "none") +
+    scale_color_manual(
+        name = NULL,
+        values = c("male" = "#FF7518", "female" = "#000000"),
+        labels = c("male" = "Male", "female" = "Female")
     ) +
     scale_x_discrete(labels = c("Type I", "Type II")) +
     ggplot2::theme_bw() +
@@ -184,8 +201,9 @@ csrp3_fig <- emm_csrp3 %>%
         panel.grid.minor = element_blank(),
         panel.grid.major = element_blank(),
         plot.background = element_blank(),
-        legend.position = "none",
+        legend.position = "right",
         legend.key.size = unit(0.5, "lines"),
+        legend.box.spacing = unit(1, "pt"),
         legend.box.margin = ggplot2::margin(-10, 0, -10, 0),
         axis.title.x = ggplot2::element_blank(),
         text = element_text(size = 8),
@@ -193,7 +211,7 @@ csrp3_fig <- emm_csrp3 %>%
         axis.text.y = element_text(color = "black", size = 8),
         axis.line = element_line(colour = "black"),
         strip.text = element_text(size = 8),
-        plot.title = element_text(size = 10, face = "bold", hjust = 0.5)
+        plot.title = element_text(size = 8, face = "bold", hjust = 0.5)
     ) +
     #scale_y_continuous(limits = c(-0.2, 1.2)) +
     geom_segment(data = brackets_csrp3, aes(x = x, xend = xend, y = y, yend = yend), size = 0.25, inherit.aes = FALSE) +

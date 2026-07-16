@@ -94,7 +94,7 @@ merged_volcano <- merged_df_fibers %>%
         aes(label = protein,
             fill = regulated),
         color = "black",
-        size = 1.75,
+        size = 2,
         label.padding = 0.1,
         min.segment.length = 0.1,
         segment.size = 0.2,
@@ -111,4 +111,4 @@ merged_volcano <- merged_df_fibers %>%
     guides(fill = FALSE)
 
 
-#ggsave(plot = merged_volcano, here::here('figures/figure_2/fibertype_volcano.pdf'), height = 70, width = 120, units = "mm")
+ggsave(plot = merged_volcano, here::here('figures/figure_2/fibertype_volcano.pdf'), height = 70, width = 120, units = "mm")

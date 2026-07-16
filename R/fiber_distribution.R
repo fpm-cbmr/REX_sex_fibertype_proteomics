@@ -214,14 +214,12 @@ p_dist <- tibble(
 #Figure
 dist_fig <- df_ihc %>%
     ggplot(aes(x = trial, y = dist*100, fill = sex)) +
-    stat_summary(fun = mean, geom = "bar",
-                 position = position_dodge(width = 0.95),
-                 width = 0.9, color = NA, alpha = 0.8) +
+    geom_boxplot(width=0.75, linewidth = 0.25, alpha=0.5, outlier.size = 0, outlier.stroke = 0)+
     geom_jitter(size = 2,
                 aes(color = sex),
                 alpha = 0.5,
                 stroke = 0,
-                position = position_jitterdodge(jitter.width = 0, dodge.width = 0.95)) +
+                position = position_jitterdodge(jitter.width = 0, dodge.width = 0.75)) +
     scale_fill_manual(values=c("female" = "#000000", "male" = "#FF7518"),
                       labels = c("female" = "Females", "male" = "Males"),
                       name = NULL)+
@@ -245,7 +243,7 @@ dist_fig <- df_ihc %>%
         strip.text = element_text(size = 8),
         plot.title = element_text(size = 8, face = "bold", hjust = 0.5)
     )+
-    coord_cartesian(ylim = c(10, 100)) +
+    #coord_cartesian(ylim = c(10, 100)) +
     #geom_segment(data = lines_dist, aes(x = x, xend = xend, y = y, yend = yend), size = 0.25, inherit.aes = FALSE) +
     #geom_segment(data = brackets_dist, aes(x = x, xend = xend, y = y, yend = yend), size = 0.25, inherit.aes = FALSE) +
     #geom_text(data = p_dist, aes(x = x, y = y, label = label), inherit.aes = FALSE, size = 2) +
@@ -303,14 +301,12 @@ p_dist_area <- tibble(
 #Figure
 area_dist_fig <- df_ihc %>%
     ggplot(aes(x = trial, y = area_dist*100, fill = sex)) +
-    stat_summary(fun = mean, geom = "bar",
-                 position = position_dodge(width = 0.95),
-                 width = 0.9, color = NA, alpha = 0.8) +
+    geom_boxplot(width=0.75, linewidth = 0.25, alpha=0.5, outlier.size = 0, outlier.stroke = 0)+
     geom_jitter(size = 2,
                 aes(color = sex),
                 alpha = 0.5,
                 stroke = 0,
-                position = position_jitterdodge(jitter.width = 0, dodge.width = 0.95)) +
+                position = position_jitterdodge(jitter.width = 0, dodge.width = 0.75)) +
     scale_fill_manual(values=c("#000000", "#FF7518"))+
     scale_color_manual(values = c("#000000", "#FF7518")) +
     scale_x_discrete(labels=c("pre" = "Pre", "post" = "Post"))+
@@ -330,7 +326,7 @@ area_dist_fig <- df_ihc %>%
         strip.text = element_text(size = 8),
         plot.title = element_text(size = 8, face = "bold", hjust = 0.5)
     )+
-    coord_cartesian(ylim = c(10, 100)) +
+    #coord_cartesian(ylim = c(10, 100)) +
     #geom_segment(data = lines_dist_area, aes(x = x, xend = xend, y = y, yend = yend), size = 0.25, inherit.aes = FALSE) +
     #geom_segment(data = brackets_dist_area, aes(x = x, xend = xend, y = y, yend = yend), size = 0.25, inherit.aes = FALSE) +
     #geom_text(data = p_dist_area, aes(x = x, y = y, label = label), inherit.aes = FALSE, size = 2) +

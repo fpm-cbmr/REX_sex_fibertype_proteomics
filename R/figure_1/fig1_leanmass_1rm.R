@@ -28,7 +28,7 @@ print(means_1rm)
 
 #run linear model of trial for each sex
 lm_1rm_sex <- contrast(means_1rm, method = "pairwise", by = "sex", adjust = "none")
-print(lm_1rm_sex)
+lm_1rm_sex_df <- summary(lm_1rm_sex)
 
 #run linear mixed model for lean mass for main effects and interaction
 lm_leanmass <- lmer(lbm_legs ~ trial * sex + (1 | id), data = lbm_1rm_df, REML = FALSE)
@@ -40,7 +40,7 @@ print(means_leanmass)
 
 #run linear model of trial for each sex
 lm_leanmass_sex <- contrast(means_leanmass, method = "pairwise", by = "sex", adjust = "none")
-print(lm_leanmass_sex)
+lm_leanmass_sex_df <- summary(lm_leanmass_sex)
 
 #bracket for leg lean mass figure
 bracket_leanmass <- tibble(

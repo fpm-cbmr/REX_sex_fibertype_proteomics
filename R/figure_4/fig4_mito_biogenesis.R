@@ -74,7 +74,7 @@ print(means_oxphos)
 
 #run linear mixed model of trial for each fiber type and sex
 lm_oxphos_trial <- contrast(means_oxphos, method = "pairwise", by = c("fibertype", "sex"), adjust = "none")
-print(lm_oxphos_trial)
+lm_oxphos_trial_df <- summary(lm_oxphos_trial)
 
 #linear mixed model of log2fc
 lmm_oxphos_log2fc <- lmer(mean_log2fc ~ fibertype * sex + (1 | protein), data = oxphos_log2fc, REML = FALSE)
@@ -86,11 +86,11 @@ print(means_oxphos_log2fc)
 
 #run linear mixed model of sex for each fiber type
 lm_oxphos_log2fc_sex <- contrast(means_oxphos_log2fc, method = "pairwise", by = "fibertype", adjust = "none")
-print(lm_oxphos_log2fc_sex)
+lm_oxphos_fc_sex_df <- summary(lm_oxphos_log2fc_sex)
 
 #run linear mixed model of fiber type for each sex
 lm_oxphos_log2fc_fibertype <- contrast(means_oxphos_log2fc, method = "pairwise", by = "sex", adjust = "none")
-print(lm_oxphos_log2fc_fibertype)
+lm_oxphos_fc_fibertype_df <- summary(lm_oxphos_log2fc_fibertype)
 
 #define brackets for box plot
 brackets_oxphos <- tibble(
@@ -123,12 +123,11 @@ oxphos_fig <- oxphos_log2fc %>%
     ggplot(aes(x = fibertype, y = mean_log2fc,
                fill = fibertype,
                group = interaction(fibertype, sex))) +
-    geom_violin(trim = TRUE, width = 1, linewidth = 0.5, alpha = 0.5,
+    geom_violin(trim = TRUE, width = 1, linewidth = 0.25, alpha = 0.5,
                 position = position_dodge(width = 1),
                 aes(color = sex)) +
-    geom_boxplot(width=0.25, position = position_dodge(width = 1), color="black", fill="white", alpha=0.5, outlier.size = 1.5, outlier.stroke = 0)+
-    geom_jitter(position = position_dodge(width = 1),color = "black", size = 1.5, alpha = 0.25, stroke = 0) +
-    geom_hline(yintercept = 0, linetype = "dashed") +
+    geom_boxplot(width=0.25, linewidth = 0.25, position = position_dodge(width = 1), color="black", fill="white", alpha=0.5, outlier.size = 0, outlier.stroke = 0)+
+    geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.25) +
     scale_color_manual(values = c("female" = "black", "male" = "#FF7518"),
                        labels = c("female" = "Female", "male" = "Male")) +
     scale_fill_manual(values = c("mhc1" = "#440154FF", "mhc2" = "#67CC5CFF"),
@@ -158,6 +157,8 @@ oxphos_fig <- oxphos_log2fc %>%
     xlab("") +
     ylab("Log2fold change (post - pre)") +
     ggtitle("OXPHOS")
+
+ggsave(plot = oxphos_fig, here::here('figures/figure_4/oxphos_log2fc.pdf'), height = 60, width = 60, units = "mm")
 
 ##OXPHOS BAR PLOT##
 
@@ -228,8 +229,6 @@ oxphos_fig <- ggplot(emm_oxphos, aes(x = fibertype, y = emmean, fill = fibertype
     ylab("Log2fold change (post - pre)") +
     ggtitle("OXPHOS")
 
-#ggsave(plot = oxphos_fig, here::here('figures/figure_4/oxphos_log2fc.pdf'), height = 70, width = 60, units = "mm")
-
 ##MITORIBOSOME##
 #linear mixed model
 lmm_mitoribo <- lmer(mean_expression ~ trial * fibertype * sex + (1 | protein), data = mitoribo_df, REML = FALSE)
@@ -241,7 +240,7 @@ print(means_mitoribo)
 
 #run linear mixed model of trial for each fiber type and sex
 lm_mitoribo_trial <- contrast(means_mitoribo, method = "pairwise", by = c("fibertype", "sex"), adjust = "none")
-print(lm_mitoribo_trial)
+lm_mitoribo_trial_df <- summary(lm_mitoribo_trial)
 
 #linear mixed model of log2fc
 lmm_mitoribo_log2fc <- lmer(mean_log2fc ~ fibertype * sex + (1 | protein), data = mitoribo_log2fc, REML = FALSE)
@@ -253,11 +252,11 @@ print(means_mitoribo_log2fc)
 
 #run linear mixed model of sex for each fiber type
 lm_mitoribo_log2fc_sex <- contrast(means_mitoribo_log2fc, method = "pairwise", by = "fibertype", adjust = "none")
-print(lm_mitoribo_log2fc_sex)
+lm_mitoribo_fc_sex_df <- summary(lm_mitoribo_log2fc_sex)
 
 #run linear mixed model of fiber type for each sex
 lm_mitoribo_log2fc_fibertype <- contrast(means_mitoribo_log2fc, method = "pairwise", by = "sex", adjust = "none")
-print(lm_mitoribo_log2fc_fibertype)
+lm_mitoribo_fc_fibertype_df <- summary(lm_mitoribo_log2fc_fibertype)
 
 #define brackets for box plot
 brackets_mitoribo <- tibble(
@@ -290,12 +289,11 @@ mitoribo_fig <- mitoribo_log2fc %>%
     ggplot(aes(x = fibertype, y = mean_log2fc,
                fill = fibertype,
                group = interaction(fibertype, sex))) +
-    geom_violin(trim = TRUE, width = 1, linewidth = 0.5, alpha = 0.5,
+    geom_violin(trim = TRUE, width = 1, linewidth = 0.25, alpha = 0.5,
                 position = position_dodge(width = 1),
                 aes(color = sex)) +
-    geom_boxplot(width=0.25, position = position_dodge(width = 1), color="black", fill="white", alpha=0.5, outlier.size = 1.5, outlier.stroke = 0)+
-    geom_jitter(position = position_dodge(width = 1),color = "black", size = 1.5, alpha = 0.25, stroke = 0) +
-    geom_hline(yintercept = 0, linetype = "dashed") +
+    geom_boxplot(width=0.25, linewidth = 0.25, position = position_dodge(width = 1), color="black", fill="white", alpha=0.5, outlier.size = 0, outlier.stroke = 0)+
+    geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.25) +
     scale_color_manual(values = c("female" = "black", "male" = "#FF7518"),
                        labels = c("female" = "Female", "male" = "Male")) +
     scale_fill_manual(values = c("mhc1" = "#440154FF", "mhc2" = "#67CC5CFF"),
@@ -325,6 +323,8 @@ mitoribo_fig <- mitoribo_log2fc %>%
     xlab("") +
     ylab("Log2fold change (post - pre)") +
     ggtitle("Mitochondrial ribosome")
+
+ggsave(plot = mitoribo_fig, here::here('figures/figure_4/mitoribosome_log2fc.pdf'), height = 60, width = 60, units = "mm")
 
 
 ##MITORIBOSOME BAR PLOT##
@@ -395,8 +395,6 @@ mitoribo_fig <- ggplot(emm_mitoribo, aes(x = fibertype, y = emmean, fill = fiber
     xlab("") +
     ylab("Log2fold change (post - pre)") +
     ggtitle("Mitochondrial ribosome")
-
-ggsave(plot = mitoribo_fig, here::here('figures/figure_4/mitoribosome_log2fc.pdf'), height = 70, width = 60, units = "mm")
 
 # MITOCHONDRIAL TRANSLATION -----------------------------------------------
 

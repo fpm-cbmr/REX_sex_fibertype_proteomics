@@ -35,10 +35,12 @@ p_vo2 <- tibble(
 ##Plot of VO2max/kg##
 vo2max_fig <- vo2_df %>%
     ggplot(aes(x = sex, y = vo2max_kg, fill = sex)) +
-    stat_summary(fun = mean, geom = "bar",
-                 position = position_dodge(width = 0.9),
-                 width = 0.9, color = NA, alpha = 0.8) +
-    geom_jitter(size=2, width=0, aes(color = sex), alpha = 0.5, stroke=0)+
+    geom_boxplot(width=0.75, linewidth = 0.25, alpha=0.5, outlier.size = 0, outlier.stroke = 0)+
+    geom_jitter(size = 2,
+                aes(color = sex),
+                alpha = 0.5,
+                stroke = 0,
+                position = position_jitterdodge(jitter.width = 0, dodge.width = 0.75)) +
     scale_fill_manual(values=c("#000000", "#FF7518"))+
     scale_color_manual(values = c("#000000", "#FF7518")) +
     scale_x_discrete(labels=c("Females", "Males"))+
@@ -57,7 +59,7 @@ vo2max_fig <- vo2_df %>%
         strip.text = element_text(size = 8),
         plot.title = element_text(size = 8, face = "bold", hjust = 0.5)
     )+
-    coord_cartesian(ylim = c(30, 60)) +
+    #coord_cartesian(ylim = c(30, 60)) +
     geom_segment(data = brackets_vo2, aes(x = x, xend = xend, y = y, yend = yend), size = 0.25, inherit.aes = FALSE) +
     geom_text(data = p_vo2, aes(x = x, y = y, label = label), inherit.aes = FALSE, size = 2) +
     xlab("none") +
@@ -86,10 +88,12 @@ p_vo2_lbm <- tibble(
 ##Plot of VO2max/kg lbm##
 vo2max_lbm_fig <- vo2_df %>%
     ggplot(aes(x = sex, y = vo2max_lbm, fill = sex)) +
-    stat_summary(fun = mean, geom = "bar",
-                 position = position_dodge(width = 0.9),
-                 width = 0.9, color = NA, alpha = 0.8) +
-    geom_jitter(size=2, width=0, aes(color = sex), alpha = 0.5, stroke=0)+
+    geom_boxplot(width=0.75, linewidth = 0.25, alpha=0.5, outlier.size = 0, outlier.stroke = 0)+
+    geom_jitter(size = 2,
+                aes(color = sex),
+                alpha = 0.5,
+                stroke = 0,
+                position = position_jitterdodge(jitter.width = 0, dodge.width = 0.75)) +
     scale_fill_manual(values=c("#000000", "#FF7518"),
                       name = NULL)+
     scale_color_manual(values = c("#000000", "#FF7518"),

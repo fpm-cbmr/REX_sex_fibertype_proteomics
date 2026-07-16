@@ -112,6 +112,6 @@ translation_df |>
 ggplot2::ggsave(here::here("figures/figure_6/correlation_translation_CSA.pdf"),
                 units = "mm",
                 height = 60,
-                width = 60)
+                width = 50)
 
 
