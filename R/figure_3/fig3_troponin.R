@@ -117,8 +117,18 @@ tnn_plot <- tnn_long %>%
     geom_boxplot(width = 1, linewidth = 0.25, alpha = 0.5, outlier.size = 0, outlier.stroke = 0) +
     geom_jitter(position = position_dodge(width = 1),
                 aes(color = sex), size = 1, alpha = 0.5, stroke = 0) +
-    scale_fill_manual(values = c("#000000", "#FF7518")) +
-    scale_color_manual(values = c("#000000", "#FF7518")) +
+    scale_fill_manual(
+        values = c(
+            "female" = "#000000",
+            "male" = "#FF7518"
+        )
+    ) +
+    scale_color_manual(
+        values = c(
+            "female" = "#000000",
+            "male" = "#FF7518"
+        )
+    ) +
     theme_bw() +
     theme(
         panel.background = element_rect(color = "black", fill = NA, linewidth = 0.5),
